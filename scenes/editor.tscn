@@ -1,0 +1,89 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwdaynrme1xnl"]
+
+[ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
+[ext_resource type="Script" path="res://scripts/editor/menu/import.gd" id="3_c8inj"]
+[ext_resource type="Script" path="res://scripts/editor/menu/file.gd" id="3_j6eag"]
+
+[node name="Editor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4cqpu")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HSplitContainer" type="VSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+collapsed = true
+dragger_visibility = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="MenuBar" type="MenuBar" parent="HSplitContainer/MarginContainer"]
+layout_mode = 2
+flat = true
+
+[node name="File" type="PopupMenu" parent="HSplitContainer/MarginContainer/MenuBar"]
+title = "helloworld"
+item_count = 6
+item_0/text = "New"
+item_1/text = "Open"
+item_1/id = 1
+item_2/text = "Save"
+item_2/id = 2
+item_3/text = "Save As"
+item_3/id = 3
+item_4/id = 4
+item_4/separator = true
+item_5/text = "Exit"
+item_5/id = 5
+script = ExtResource("3_j6eag")
+
+[node name="Import" type="PopupMenu" parent="HSplitContainer/MarginContainer/MenuBar"]
+item_count = 1
+item_0/text = "backgrounds"
+item_0/separator = true
+script = ExtResource("3_c8inj")
+
+[node name="Title" type="Label" parent="HSplitContainer/MarginContainer"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="HSplitContainer"]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="HSplitContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="OpenFileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json")
+show_hidden_files = true
+use_native_dialog = true
+
+[node name="SaveFileDialog" type="FileDialog" parent="."]
+access = 2
+filters = PackedStringArray("*.json")
+use_native_dialog = true
