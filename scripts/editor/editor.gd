@@ -7,11 +7,16 @@ const BACKGROUND_PATH: String = "SceneEditor/Assets/Backgrounds"
 
 static var scene: Dictionary = { "title": "untitled", "pages": [] }
 
+# file system UI objects
 static var open_file_dialog: FileDialog
 static var save_file_dialog: FileDialog
 
-static var background: ImageTexture
+# scene UI objects
+static var alert: Label
 static var title: LineEdit
+static var background: ImageTexture
+static var l_actor: ImageTexture
+static var r_actor: ImageTexture
 
 
 static func __get_data_path(path: String) -> String:
@@ -35,6 +40,17 @@ static func __dump_scene(path: String) -> void:
 	file.store_string(JSON.stringify(scene))
 
 
+static func __set_scene_title(name: String) -> void:
+	for symbol in ['<', '>', ':', '"', "/", "\\", "|", "?", "*"]:
+		if name.contains(symbol):
+			alert.error("invalid symbol in title: '%s'. Try using a different one?" % symbol)
+			title.text = ''
+			return
+	
+	alert.alert("title changed")
+	scene["title"] = name
+
+
 static func new_scene() -> void:
 	scene = { "title": "untitled", "pages": [] }
 	title.text = "untitled"
@@ -44,6 +60,7 @@ static func new_scene() -> void:
 static func save_scene() -> void:
 	var path: String = __get_data_path(SCENE_PATH)
 	var file: String = ".".join([scene["title"], "json"])
+	print(file)
 	__dump_scene(path.path_join(file))
 
 
@@ -78,7 +95,12 @@ func _ready() -> void:
 	open_file_dialog = $OpenFileDialog
 	save_file_dialog = $SaveFileDialog
 
-	title = $HSplit/Header/HSplit/TitleInput
+	alert = $UI/Header/Inputs/Alert
+
+	title = $UI/Header/Inputs/TitleInput
+	title.connect('text_submitted', __set_scene_title)
 	title.text = scene["title"]
 
-	background = $HSplit/Body/HSplit/VSplit/Background.texture
+	background = $UI/Body/Panels/Page/Background.texture
+	l_actor = $UI/Body/Panels/Page/Background/Actors/LActor.texture
+	r_actor = $UI/Body/Panels/Page/Background/Actors/RActor.texture

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=6 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
 [ext_resource type="Script" path="res://scripts/editor/menu/scene.gd" id="3_c8inj"]
 [ext_resource type="Script" path="res://scripts/editor/menu/file.gd" id="3_j6eag"]
+[ext_resource type="Script" path="res://scripts/editor/error.gd" id="4_pla7g"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
@@ -15,15 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4cqpu")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HSplit" type="VSplitContainer" parent="."]
+[node name="UI" type="VSplitContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,22 +26,22 @@ grow_vertical = 2
 collapsed = true
 dragger_visibility = 2
 
-[node name="Header" type="MarginContainer" parent="HSplit"]
+[node name="Header" type="MarginContainer" parent="UI"]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 0
 
-[node name="HSplit" type="HSplitContainer" parent="HSplit/Header"]
+[node name="Inputs" type="HBoxContainer" parent="UI/Header"]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="MenuBar" type="MenuBar" parent="HSplit/Header/HSplit"]
+[node name="MenuBar" type="MenuBar" parent="UI/Header/Inputs"]
 layout_mode = 2
-size_flags_horizontal = 3
 flat = true
 
-[node name="File" type="PopupMenu" parent="HSplit/Header/HSplit/MenuBar"]
+[node name="File" type="PopupMenu" parent="UI/Header/Inputs/MenuBar"]
 title = "helloworld"
 item_count = 6
 item_0/text = "New"
@@ -64,51 +57,101 @@ item_5/text = "Exit"
 item_5/id = 5
 script = ExtResource("3_j6eag")
 
-[node name="Scene" type="PopupMenu" parent="HSplit/Header/HSplit/MenuBar"]
+[node name="Scene" type="PopupMenu" parent="UI/Header/Inputs/MenuBar"]
 item_count = 1
 item_0/text = "Import background"
 script = ExtResource("3_c8inj")
 
-[node name="TitleInput" type="LineEdit" parent="HSplit/Header/HSplit"]
+[node name="Alert" type="Label" parent="UI/Header/Inputs"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 2
+script = ExtResource("4_pla7g")
+
+[node name="TitleInput" type="LineEdit" parent="UI/Header/Inputs"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "untitled"
-max_length = 32
+max_length = 80
 clear_button_enabled = true
 flat = true
 select_all_on_focus = true
 
-[node name="Body" type="MarginContainer" parent="HSplit"]
+[node name="Body" type="MarginContainer" parent="UI"]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="HSplit" type="HSplitContainer" parent="HSplit/Body"]
+[node name="Panels" type="HSplitContainer" parent="UI/Body"]
 layout_mode = 2
 dragger_visibility = 2
 
-[node name="PageControl" type="VBoxContainer" parent="HSplit/Body/HSplit"]
+[node name="PageControls" type="VBoxContainer" parent="UI/Body/Panels"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VSplit" type="VSplitContainer" parent="HSplit/Body/HSplit"]
+[node name="Page" type="VSplitContainer" parent="UI/Body/Panels"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 3.0
 dragger_visibility = 2
 
-[node name="Background" type="TextureRect" parent="HSplit/Body/HSplit/VSplit"]
+[node name="Background" type="TextureRect" parent="UI/Body/Panels/Page"]
 layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 texture = SubResource("ImageTexture_8hf2w")
 expand_mode = 3
 
-[node name="SceneControl" type="HBoxContainer" parent="HSplit/Body/HSplit/VSplit"]
+[node name="Actors" type="HSplitContainer" parent="UI/Body/Panels/Page/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+dragger_visibility = 2
+
+[node name="LActor" type="TextureRect" parent="UI/Body/Panels/Page/Background/Actors"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RActor" type="TextureRect" parent="UI/Body/Panels/Page/Background/Actors"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PageInputs" type="HSplitContainer" parent="UI/Body/Panels/Page"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 12
+dragger_visibility = 1
+
+[node name="TextEdit" type="TextEdit" parent="UI/Body/Panels/Page/PageInputs"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Body/Panels/Page/PageInputs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Next page" type="Button" parent="UI/Body/Panels/Page/PageInputs/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "NEXT"
+
+[node name="Previous page" type="Button" parent="UI/Body/Panels/Page/PageInputs/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "BACK"
+
+[node name="Remove page" type="Button" parent="UI/Body/Panels/Page/PageInputs/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "DELETE"
 
 [node name="OpenFileDialog" type="FileDialog" parent="."]
 title = "Open a File"
