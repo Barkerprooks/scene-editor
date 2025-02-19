@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=13 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
 [ext_resource type="Script" path="res://scripts/editor/menu/scene.gd" id="3_c8inj"]
@@ -23,6 +23,11 @@ expand_margin_left = 10.0
 expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8n16"]
+content_margin_left = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [node name="Editor" type="Control"]
 layout_mode = 3
@@ -76,10 +81,8 @@ item_5/id = 5
 script = ExtResource("3_j6eag")
 
 [node name="Scene" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
-item_count = 2
+item_count = 1
 item_0/text = "Import background"
-item_1/text = "Import actor"
-item_1/id = 1
 script = ExtResource("3_c8inj")
 
 [node name="Background" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
@@ -130,14 +133,22 @@ dragger_visibility = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LActor" type="MenuButton" parent="UI/Body/Panels/PageControls"]
+[node name="Actor 1" type="Label" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
 text = "ACTOR 1"
+
+[node name="LActor" type="MenuButton" parent="UI/Body/Panels/PageControls"]
+layout_mode = 2
+text = "Select actor"
 alignment = 0
+
+[node name="Actor 2" type="Label" parent="UI/Body/Panels/PageControls"]
+layout_mode = 2
+text = "ACTOR 2"
 
 [node name="RActor" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
-text = "ACTOR 2"
+text = "Select actor"
 alignment = 0
 
 [node name="PagePanels" type="VSplitContainer" parent="UI/Body/Panels"]
@@ -244,6 +255,7 @@ anchor_bottom = 1.0
 offset_top = -23.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_g8n16")
 script = ExtResource("4_pla7g")
 
 [node name="OpenFileDialog" type="FileDialog" parent="."]

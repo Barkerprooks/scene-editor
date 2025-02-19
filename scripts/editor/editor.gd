@@ -80,11 +80,11 @@ static func __sync_scene() -> void:
 	# load background image
 	load_background(scene["background"])
 	
-	var l_actor_image = Image.new()
-	var r_actor_image = Image.new()
-	
-	l_actor.set_image(l_actor_image)
-	r_actor.set_image(r_actor_image)
+	#var l_actor_image = Image.create_empty(400, 400, false, Image.FORMAT_RGBH)
+	#var r_actor_image = Image.create_empty(400, 400, false, Image.FORMAT_RGBH)
+	#
+	#l_actor.set_image(l_actor_image)
+	#r_actor.set_image(r_actor_image)
 
 
 static func __load_scene(path: String) -> void:
@@ -126,16 +126,26 @@ static func __set_dialogue_text() -> void:
 
 
 static func new_scene() -> void:
+	page_index = 0 # reset view to first page
 	scene = create_new_scene()
 	__sync_scene()
 
 
 static func open_scene() -> void:
+	page_index = 0 # reset view to first page
+	
 	open_file_dialog.filters = ["*.json"]
 	open_file_dialog.current_dir = __get_data_path(SCENE_PATH)
 	
-	open_file_dialog.disconnect("file_selected", __import_background)
-	open_file_dialog.connect("file_selected", __load_scene)
+	var connections = []
+	for connection in open_file_dialog.get_signal_connection_list("file_selected"):
+		connections.append(connection["callable"])
+		if connection["callable"] == __import_background:
+			open_file_dialog.disconnect("file_selected", __import_background)
+	
+	if __load_scene not in connections:
+		open_file_dialog.connect("file_selected", __load_scene)
+	
 	open_file_dialog.popup()
 
 
@@ -171,8 +181,15 @@ static func import_background() -> void:
 	open_file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.gif,*.svg"]
 	open_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)
 	
-	open_file_dialog.disconnect("file_selected", __load_scene)
-	open_file_dialog.connect("file_selected", __import_background)
+	var connections = []
+	for connection in open_file_dialog.get_signal_connection_list("file_selected"):
+		connections.append(connection["callable"])
+		if connection["callable"] == __load_scene:
+			open_file_dialog.disconnect("file_selected", __load_scene)
+	
+	if __import_background not in connections:
+		open_file_dialog.connect("file_selected", __import_background)
+	
 	open_file_dialog.popup()
 
 

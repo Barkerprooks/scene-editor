@@ -15,7 +15,7 @@ func _ready() -> void:
 	delete.connect("pressed", func(): Editor.delete_page())
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	next.disabled = Editor.dialogue_edit.text == ''
 	next.text = "ADD PAGE" if Editor.page_index == len(Editor.scene["pages"]) - 1 else "NEXT"
 	back.disabled = Editor.page_index == 0

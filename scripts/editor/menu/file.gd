@@ -17,5 +17,5 @@ func _ready() -> void:
 	connect("id_pressed", __file_button_pressed)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	set_item_disabled(2, Editor.scene["title"] == "untitled")
