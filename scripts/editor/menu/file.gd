@@ -11,4 +11,7 @@ func __file_button_pressed(id: int) -> void:
 		_: get_tree().quit()
 
 func _ready() -> void:
-	self.connect("id_pressed", __file_button_pressed)
+	connect("id_pressed", __file_button_pressed)
+
+func _process(delta: float) -> void:
+	set_item_disabled(2, Editor.scene["title"] == "untitled")
