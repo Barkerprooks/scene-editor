@@ -39,8 +39,9 @@ static var dialogue_edit: TextEdit
 
 
 static func debug(text: String) -> void:
-	alert.alert(text)
-	print_debug(text)
+	if alert: # if the UI element doesn't exist yet we can't really use it
+		alert.alert(text)
+		print_debug(text)
 
 
 static func __get_data_path(path: String) -> String:

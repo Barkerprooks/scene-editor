@@ -81,8 +81,10 @@ item_5/id = 5
 script = ExtResource("3_j6eag")
 
 [node name="Scene" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
-item_count = 1
-item_0/text = "Import background"
+item_count = 2
+item_0/text = "Import actor"
+item_1/text = "Add pose"
+item_1/id = 1
 script = ExtResource("3_c8inj")
 
 [node name="Background" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]

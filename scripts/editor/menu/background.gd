@@ -16,11 +16,13 @@ func __index_pressed(index: int) -> void:
 
 
 func set_background_list() -> void:
+	var backgrounds = Editor.list_backgrounds()
 	clear()
 	add_item("import background")
-	add_separator()
-	for filename in Editor.list_backgrounds():
-		add_item(filename)
+	if len(backgrounds) > 0:
+		add_separator()
+		for filename in backgrounds:
+			add_item(filename)
 
 
 func _ready() -> void:
