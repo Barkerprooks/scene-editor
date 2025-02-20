@@ -176,6 +176,7 @@ static func __import_background(path: String) -> void:
 	background_select.set_background_list()
 	
 	debug("imported background image: %s" % filename)
+	load_background(filename)
 
 
 static func import_background() -> void:

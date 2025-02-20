@@ -1,7 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=12 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
-[ext_resource type="Script" path="res://scripts/editor/menu/scene.gd" id="3_c8inj"]
 [ext_resource type="Script" path="res://scripts/editor/menu/file.gd" id="3_j6eag"]
 [ext_resource type="Script" path="res://scripts/editor/menu/background.gd" id="4_83a2c"]
 [ext_resource type="Script" path="res://scripts/editor/page/buttons.gd" id="4_d0t6c"]
@@ -80,12 +79,7 @@ item_5/text = "Exit"
 item_5/id = 5
 script = ExtResource("3_j6eag")
 
-[node name="Scene" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
-item_count = 2
-item_0/text = "Import actor"
-item_1/text = "Add pose"
-item_1/id = 1
-script = ExtResource("3_c8inj")
+[node name="Actor" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
 
 [node name="Background" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
 script = ExtResource("4_83a2c")
