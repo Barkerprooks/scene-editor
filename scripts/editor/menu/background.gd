@@ -1,13 +1,12 @@
 extends PopupMenu
 
 
-@onready var ImportBackgroundDialog = $/root/Editor/ImportBackgroundDialog
 @onready var Editor = $/root/Editor
 
 
 func index_pressed(index: int) -> void:
 	if index == 0:
-		ImportBackgroundDialog.popup()
+		$/root/Editor/ImportDialog.import_file(Editor.import_background)
 		return
 	
 	var string = get_item_text(index)

@@ -1,13 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=18 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
+[ext_resource type="Script" path="res://scripts/editor/menu/actor.gd" id="3_ay77g"]
 [ext_resource type="Script" path="res://scripts/editor/menu/file.gd" id="3_j6eag"]
 [ext_resource type="Script" path="res://scripts/editor/menu/background.gd" id="4_83a2c"]
 [ext_resource type="Script" path="res://scripts/editor/page/buttons.gd" id="4_d0t6c"]
 [ext_resource type="Script" path="res://scripts/editor/alert.gd" id="4_pla7g"]
 [ext_resource type="Script" path="res://scripts/editor/menu/title_input.gd" id="5_ssdpi"]
-[ext_resource type="Script" path="res://scripts/editor/menu/import_background_dialog.gd" id="7_8wxph"]
+[ext_resource type="Script" path="res://scripts/editor/menu/import_background.gd" id="7_8wxph"]
 [ext_resource type="Script" path="res://scripts/editor/menu/open_file_popup.gd" id="7_bn6pa"]
+[ext_resource type="Script" path="res://scripts/editor/menu/import_actor.gd" id="9_2mu6q"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
@@ -15,16 +17,16 @@
 
 [sub_resource type="ImageTexture" id="ImageTexture_gnf26"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_np1nb"]
-bg_color = Color(0.6, 0.6, 0.6, 0.603922)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pjl6e"]
+content_margin_left = 24.0
+content_margin_top = 12.0
+content_margin_right = 24.0
+content_margin_bottom = 12.0
+bg_color = Color(0.373358, 0.676408, 0.494825, 0.686275)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-expand_margin_left = 10.0
-expand_margin_top = 5.0
-expand_margin_right = 10.0
-expand_margin_bottom = 5.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4t3i"]
 content_margin_left = 8.0
@@ -107,6 +109,7 @@ item_count = 2
 item_0/text = "Import actor folder"
 item_1/text = "Import pose image"
 item_1/id = 1
+script = ExtResource("3_ay77g")
 
 [node name="Background" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
 script = ExtResource("4_83a2c")
@@ -168,13 +171,11 @@ text = "ACTOR 1"
 layout_mode = 2
 text = "Select actor"
 flat = false
-alignment = 0
 
 [node name="LPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
 text = "Select pose"
 flat = false
-alignment = 0
 
 [node name="HSeparator" type="HSeparator" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
@@ -188,13 +189,11 @@ text = "ACTOR 2"
 layout_mode = 2
 text = "Select actor"
 flat = false
-alignment = 0
 
 [node name="RPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
 text = "Select pose"
 flat = false
-alignment = 0
 
 [node name="PagePanels" type="VSplitContainer" parent="UI/Body/Panels"]
 layout_mode = 2
@@ -239,6 +238,7 @@ texture = SubResource("ImageTexture_gnf26")
 
 [node name="Overlay" type="VSplitContainer" parent="UI/Body/Panels/PagePanels/Page"]
 layout_mode = 2
+collapsed = true
 dragger_visibility = 2
 
 [node name="Effects" type="TextureRect" parent="UI/Body/Panels/PagePanels/Page/Overlay"]
@@ -253,10 +253,25 @@ theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 15
 
-[node name="DialogueBox" type="Label" parent="UI/Body/Panels/PagePanels/Page/Overlay/TextMargin"]
+[node name="DialogueBox" type="TextEdit" parent="UI/Body/Panels/PagePanels/Page/Overlay/TextMargin"]
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxFlat_np1nb")
+focus_mode = 0
+mouse_default_cursor_shape = 0
+theme_override_colors/font_readonly_color = Color(1, 1, 1, 1)
+theme_override_colors/selection_color = Color(0, 0, 0, 0)
+theme_override_styles/read_only = SubResource("StyleBoxFlat_pjl6e")
+editable = false
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+wrap_mode = 1
+indent_wrapped_lines = true
 
 [node name="PageInputs" type="HSplitContainer" parent="UI/Body/Panels/PagePanels"]
 layout_mode = 2
@@ -270,7 +285,6 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
 theme_override_constants/margin_bottom = 12
 
 [node name="DialogueEditor" type="TextEdit" parent="UI/Body/Panels/PagePanels/PageInputs/DialogueMargins"]
@@ -281,26 +295,36 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_p4t3i")
 theme_override_styles/focus = SubResource("StyleBoxFlat_cinuk")
 
-[node name="Buttons" type="VBoxContainer" parent="UI/Body/Panels/PagePanels/PageInputs"]
+[node name="ButtonMargins" type="MarginContainer" parent="UI/Body/Panels/PagePanels/PageInputs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Buttons" type="VBoxContainer" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 script = ExtResource("4_d0t6c")
 
-[node name="Next" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/Buttons"]
+[node name="Next" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "NEXT"
+text = "next"
+flat = true
 
-[node name="Back" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/Buttons"]
+[node name="Back" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "BACK"
+text = "back"
+flat = true
 
-[node name="Delete" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/Buttons"]
+[node name="Delete" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
-text = "DELETE"
+text = "delete"
+flat = true
 
 [node name="Alert" type="Label" parent="."]
 clip_contents = true
@@ -316,7 +340,18 @@ theme_override_colors/font_color = Color(0.652227, 2.76752e-06, 4.33177e-07, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_g8n16")
 script = ExtResource("4_pla7g")
 
-[node name="ImportBackgroundDialog" type="FileDialog" parent="."]
+[node name="LoadScene" type="PopupMenu" parent="."]
+script = ExtResource("7_bn6pa")
+
+[node name="ImportActor" type="PopupMenu" parent="."]
+script = ExtResource("9_2mu6q")
+
+[node name="ActorLabel" type="Label" parent="ImportActor"]
+offset_right = 40.0
+offset_bottom = 23.0
+horizontal_alignment = 1
+
+[node name="ImportDialog" type="FileDialog" parent="."]
 title = "Open a File"
 initial_position = 2
 size = Vector2i(400, 600)
@@ -327,6 +362,3 @@ access = 2
 filters = PackedStringArray("*.png,*.jpg,*.jpeg,*.gif,*.svg")
 use_native_dialog = true
 script = ExtResource("7_8wxph")
-
-[node name="LoadScene" type="PopupMenu" parent="."]
-script = ExtResource("7_bn6pa")

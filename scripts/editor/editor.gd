@@ -20,7 +20,7 @@ var page: Dictionary
 # scene UI objects
 @onready var count: Label = $UI/HeaderMargins/Header/Inputs/Page
 @onready var title: LineEdit = $UI/HeaderMargins/Header/Inputs/TitleInput
-@onready var dialogue: Label = $UI/Body/Panels/PagePanels/Page/Overlay/TextMargin/DialogueBox
+@onready var dialogue: TextEdit = $UI/Body/Panels/PagePanels/Page/Overlay/TextMargin/DialogueBox
 @onready var dialogue_editor: TextEdit = $UI/Body/Panels/PagePanels/PageInputs/DialogueMargins/DialogueEditor
 
 
@@ -146,6 +146,7 @@ func import_background(path: String) -> void:
 	# copy background asset into the asset folder
 	if not FileAccess.file_exists(path):
 		error("Error: file does not exist")
+		return
 	
 	var filename = path.get_file()
 	var destination = __get_data_path(BACKGROUND_PATH).path_join(filename)
@@ -171,6 +172,14 @@ func load_background(background: String) -> void:
 		image.fill(Color.BLACK)
 		
 	$UI/Body/Panels/PagePanels/Page/Background.texture.set_image(image)
+
+
+func import_actor(path: String) -> void:
+	if not DirAccess.dir_exists_absolute(path):
+		error("actor folder not found")
+		return
+
+	$ImportActor.configure_actor(path)
 
 
 func next_page() -> void:
