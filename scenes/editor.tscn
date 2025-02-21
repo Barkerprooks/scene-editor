@@ -7,9 +7,9 @@
 [ext_resource type="Script" path="res://scripts/editor/page/buttons.gd" id="4_d0t6c"]
 [ext_resource type="Script" path="res://scripts/editor/alert.gd" id="4_pla7g"]
 [ext_resource type="Script" path="res://scripts/editor/menu/title_input.gd" id="5_ssdpi"]
-[ext_resource type="Script" path="res://scripts/editor/menu/import_background.gd" id="7_8wxph"]
+[ext_resource type="Script" path="res://scripts/editor/page/dialogue_editor.gd" id="6_rvoxm"]
+[ext_resource type="Script" path="res://scripts/editor/menu/import/background.gd" id="7_8wxph"]
 [ext_resource type="Script" path="res://scripts/editor/menu/open_file_popup.gd" id="7_bn6pa"]
-[ext_resource type="Script" path="res://scripts/editor/menu/import_actor.gd" id="9_2mu6q"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
@@ -76,8 +76,8 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 0
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
 
 [node name="Header" type="VSplitContainer" parent="UI/HeaderMargins"]
 layout_mode = 2
@@ -294,6 +294,7 @@ size_flags_stretch_ratio = 5.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_p4t3i")
 theme_override_styles/focus = SubResource("StyleBoxFlat_cinuk")
+script = ExtResource("6_rvoxm")
 
 [node name="ButtonMargins" type="MarginContainer" parent="UI/Body/Panels/PagePanels/PageInputs"]
 layout_mode = 2
@@ -311,18 +312,24 @@ script = ExtResource("4_d0t6c")
 [node name="Next" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
 text = "next"
 flat = true
 
 [node name="Back" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
 text = "back"
 flat = true
 
 [node name="Delete" type="Button" parent="UI/Body/Panels/PagePanels/PageInputs/ButtonMargins/Buttons"]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
 text = "delete"
 flat = true
 
@@ -340,17 +347,6 @@ theme_override_colors/font_color = Color(0.652227, 2.76752e-06, 4.33177e-07, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_g8n16")
 script = ExtResource("4_pla7g")
 
-[node name="LoadScene" type="PopupMenu" parent="."]
-script = ExtResource("7_bn6pa")
-
-[node name="ImportActor" type="PopupMenu" parent="."]
-script = ExtResource("9_2mu6q")
-
-[node name="ActorLabel" type="Label" parent="ImportActor"]
-offset_right = 40.0
-offset_bottom = 23.0
-horizontal_alignment = 1
-
 [node name="ImportDialog" type="FileDialog" parent="."]
 title = "Open a File"
 initial_position = 2
@@ -362,3 +358,10 @@ access = 2
 filters = PackedStringArray("*.png,*.jpg,*.jpeg,*.gif,*.svg")
 use_native_dialog = true
 script = ExtResource("7_8wxph")
+
+[node name="OpenScene" type="PopupMenu" parent="."]
+script = ExtResource("7_bn6pa")
+
+[node name="ImportActor" type="Panel" parent="."]
+visible = false
+layout_mode = 0

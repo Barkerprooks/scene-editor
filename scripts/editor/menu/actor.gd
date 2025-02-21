@@ -2,9 +2,13 @@ extends PopupMenu
 
 @onready var Editor = $/root/Editor
 
-func id_pressed(id: int) -> void:
+
+func import_actor(value: String) -> void:
+	pass
+
+func index_pressed(id: int) -> void:
 	match id:
-		0: $/root/Editor/ImportDialog.import_folder(Editor.import_actor)
+		0: $/root/Editor/ImportDialog.import_folder(import_actor)
 
 func _ready() -> void:
-	connect("id_pressed", id_pressed)
+	connect("index_pressed", index_pressed)
