@@ -1,23 +1,17 @@
 extends VBoxContainer
 
-
-@onready var Editor = preload("res://scripts/editor/editor.gd")
-
-
-@onready var next = $Next
-@onready var back = $Back
-@onready var delete = $Delete
+@onready var Editor = $/root/Editor
 
 
 func _ready() -> void:
-	next.connect("pressed", func(): Editor.next_page())
-	back.connect("pressed", func(): Editor.last_page())
-	delete.connect("pressed", func(): Editor.delete_page())
+	$Next.connect("pressed", Editor.next_page)
+	$Back.connect("pressed", Editor.last_page)
+	$Delete.connect("pressed", Editor.delete_page)
 
 
 func _process(_delta: float) -> void:
-	next.disabled = Editor.dialogue_edit.text == ''
-	next.text = "ADD PAGE" if Editor.page_index == len(Editor.scene["pages"]) - 1 else "NEXT"
-	back.disabled = Editor.page_index == 0
-	delete.disabled = next.disabled and back.disabled
-	delete.text = "CLEAR" if Editor.page_index == 0 else "DELETE"
+	$Next.disabled = Editor.dialogue_editor.text == ''
+	$Next.text = "ADD PAGE" if Editor.index == len(Editor.scene["pages"]) - 1 else "NEXT"
+	$Back.disabled = Editor.index == 0
+	$Delete.disabled = $Next.disabled and $Back.disabled
+	$Delete.text = "CLEAR" if Editor.index == 0 else "DELETE"

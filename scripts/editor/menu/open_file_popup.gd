@@ -5,9 +5,14 @@ extends PopupMenu
 
 
 func __index_pressed(index: int):
-	Editor.__load_scene(get_item_text(index))
+	Editor.load_scene(get_item_text(index))
 
 
 func _ready() -> void:
-	Editor.list_scenes().map(func(scene: String): add_item(scene))
 	connect("index_pressed", __index_pressed)
+
+
+func show_scenes() -> void:
+	clear()
+	Editor.list_scenes().map(func(scene: String): add_item(scene))
+	popup()

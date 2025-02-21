@@ -1,7 +1,7 @@
 extends LineEdit
 
 
-@onready var Editor = preload("res://scripts/editor/editor.gd")
+@onready var Editor = $/root/Editor
 
 
 func _ready() -> void:

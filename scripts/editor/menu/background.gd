@@ -1,23 +1,24 @@
 extends PopupMenu
 
 
-@onready var Editor = preload("res://scripts/editor/editor.gd")
+@onready var ImportBackgroundDialog = $/root/Editor/ImportBackgroundDialog
+@onready var Editor = $/root/Editor
 
 
-func __index_pressed(index: int) -> void:
-	var string = get_item_text(index)
-	
+func index_pressed(index: int) -> void:
 	if index == 0:
-		Editor.import_background()
-	else:
-		Editor.debug("loading background %s" % string)
-		Editor.load_background(string)
+		ImportBackgroundDialog.popup()
+		return
+	
+	var string = get_item_text(index)
+	Editor.debug("loading background %s" % string)
+	Editor.load_background(string)
 
 
-func set_background_list() -> void:
+func about_to_popup() -> void:
 	var backgrounds = Editor.list_backgrounds()
 	clear()
-	add_item("import")
+	add_item("import background image")
 	if len(backgrounds) > 0:
 		add_separator()
 		for filename in backgrounds:
@@ -25,5 +26,5 @@ func set_background_list() -> void:
 
 
 func _ready() -> void:
-	set_background_list()
-	self.connect("index_pressed", __index_pressed)
+	connect("about_to_popup", about_to_popup)
+	connect("index_pressed", index_pressed)

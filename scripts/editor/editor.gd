@@ -12,90 +12,68 @@ static func create_new_scene() -> Dictionary: return {
 	"pages": [ create_new_page() ],
 }
 
-static var page_index: int = 0
-static var page: Dictionary
-static var scene: Dictionary
-
-# file system UI objects
-static var open_file_dialog: FileDialog
+# current scene in memory
+var index: int = 0
+var scene: Dictionary
+var page: Dictionary
 
 # scene UI objects
-static var alert: Label
-static var page_count: Label
-static var title: LineEdit
-
-# scene UI
-static var background: ImageTexture
-static var l_actor: ImageTexture
-static var r_actor: ImageTexture
-static var dialogue: Label
-
-# buttons to change scene looks
-static var background_select: PopupMenu
-
-# textbox for scene
-static var dialogue_edit: TextEdit
+@onready var count: Label = $UI/HeaderMargins/Header/Inputs/Page
+@onready var title: LineEdit = $UI/HeaderMargins/Header/Inputs/TitleInput
+@onready var dialogue: Label = $UI/Body/Panels/PagePanels/Page/Overlay/TextMargin/DialogueBox
+@onready var dialogue_editor: TextEdit = $UI/Body/Panels/PagePanels/PageInputs/DialogueMargins/DialogueEditor
 
 
-static func debug(text: String) -> void:
-	if alert: # if the UI element doesn't exist yet we can't really use it
-		alert.alert(text)
-		print_debug(text)
+func debug(text: String) -> void:
+	$Alert.alert(text)
+	print(text)
 
 
-static func __get_data_path(path: String) -> String:
+func error(text: String) -> void:
+	$Alert.error(text)
+	print_debug(text)
+
+
+func __get_data_path(path: String) -> String:
 	var data_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS).path_join(path)
 	if not DirAccess.dir_exists_absolute(data_path):
-		debug("created data folder at %s" % data_path)
+		debug("created data folder %" % data_path)
 		DirAccess.make_dir_recursive_absolute(data_path)
 	return data_path
 
 
-static func __sync_scene() -> void:
-	dialogue_edit.release_focus()
+func __sync_scene() -> void:
+	dialogue_editor.release_focus()
 	title.release_focus()
 	# syncs the scene UI with whatever is in the 'scene' dictionary
 	# check to make sure we have the correct format
 	for key in create_new_scene().keys():
 		if key not in scene:
-			alert.error("invalid scene format, no %s key, talk to Parker" % key)
+			error("invalid scene format, no %s key, talk to Parker" % key)
 			return
 	
 	if len(scene["pages"]) == 0:
-		alert.error("invalid format, pages exist but the list is empty")
+		error("invalid format, pages exist but the list is empty")
 		return
 	
-	page = scene["pages"][int(page_index)]
+	page = scene["pages"][index]
 	
 	for key in create_new_page().keys():
 		if key not in page:
-			alert.error("invalid page format, no %s key, talk to Parker" % key)
+			error("invalid page format, no %s key, talk to Parker" % key)
 			return
 	
 	title.text = scene["title"]
-	page_count.text = "%s / %s" % [(page_index + 1), len(scene["pages"])]
+	count.text = "%s / %s" % [(index + 1), len(scene["pages"])]
+	
 	dialogue.text = page["dialogue"]
-	dialogue_edit.text = page["dialogue"]
+	dialogue_editor.text = page["dialogue"]
 	
 	# load background image
 	load_background(scene["background"])
 
 
-static func __load_scene(scene_name: String) -> void:
-	var path: String = __get_data_path(SCENE_PATH).path_join(scene_name) + ".json"
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
-	
-	if not file:
-		debug("file not found, talk to Parker")
-		return
-		
-	scene = JSON.parse_string(file.get_as_text())
-
-	__sync_scene()
-	debug("Opened: %s" % path)
-
-
-static func __save_scene(path: String) -> void:
+func __save_scene(path: String) -> void:
 	if not path.ends_with(".json"):
 		path = ".".join([path, "json"])
 
@@ -111,36 +89,35 @@ static func __save_scene(path: String) -> void:
 	debug("Saved: %s" % path)
 
 
-static func __set_scene_title(scene_name: String) -> void:
+func __set_scene_title(scene_name: String) -> void:
 	for symbol in ['<', '>', ':', '"', "/", "\\", "|", "?", "*"]:
 		if scene_name.contains(symbol):
-			alert.error("Error: Invalid symbol in title: '%s' - Try using a different one?" % symbol)
+			error("Error: Invalid symbol in title: '%s' - Try using a different one?" % symbol)
 			return
 	
 	debug("Set scene title: %s" % scene_name)
 	scene["title"] = scene_name
 
 
-static func __set_dialogue_text() -> void:
-	scene["pages"][page_index]["dialogue"] = dialogue_edit.text
-	dialogue.text = dialogue_edit.text
+func __set_dialogue_text() -> void:
+	scene["pages"][index]["dialogue"] = dialogue_editor.text
+	dialogue.text = dialogue_editor.text
 
 
-static func new_scene() -> void:
-	page_index = 0 # reset view to first page
+func new_scene() -> void:
+	index = 0 # reset view to first page
 	scene = create_new_scene()
 	__sync_scene()
 
 
 func open_scene() -> void:
-	$LoadScene.popup()
-	page_index = 0 # reset view to first page
+	$LoadScene.show_scenes()
+	index = 0 # reset view to first page
 
 
-static func save_scene() -> void:
+func save_scene() -> void:
 	if scene["title"] == "untitled":
 		debug("Set the scene title before you save")
-		title.grab_focus()
 		return
 	
 	var path: String = __get_data_path(SCENE_PATH)
@@ -148,110 +125,84 @@ static func save_scene() -> void:
 	__save_scene(path.path_join(file))
 
 
-static func __import_background(path: String) -> void:
+func list_scenes() -> Array:
+	var files = Array(DirAccess.get_files_at(__get_data_path(SCENE_PATH)))
+	return files.map(func(file: String): return file.trim_suffix(".json"))
+
+
+func load_scene(scene_name: String) -> void:
+	var path: String = __get_data_path(SCENE_PATH).path_join(scene_name) + ".json"
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+	
+	if not file:
+		debug("file not found, talk to Parker")
+		return
+	
+	self.scene = JSON.parse_string(file.get_as_text())
+	__sync_scene()
+
+
+func import_background(path: String) -> void:
 	# copy background asset into the asset folder
 	if not FileAccess.file_exists(path):
-		alert.error("Error: file does not exist")
+		error("Error: file does not exist")
 	
 	var filename = path.get_file()
 	var destination = __get_data_path(BACKGROUND_PATH).path_join(filename)
 	DirAccess.copy_absolute(path, destination)
 	
-	background_select.set_background_list()
-	
 	debug("imported background image: %s" % filename)
 	load_background(filename)
 
 
-static func import_background() -> void:
-	open_file_dialog.filters = ["*.png,*.jpg,*.jpeg,*.gif,*.svg"]
-	open_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS)
-	
-	var connections = []
-	for connection in open_file_dialog.get_signal_connection_list("file_selected"):
-		connections.append(connection["callable"])
-		if connection["callable"] == __load_scene:
-			open_file_dialog.disconnect("file_selected", __load_scene)
-	
-	if __import_background not in connections:
-		open_file_dialog.connect("file_selected", __import_background)
-	
-	open_file_dialog.popup()
+func list_backgrounds() -> Array:
+	return Array(DirAccess.get_files_at(__get_data_path(BACKGROUND_PATH)))
 
 
-static func list_backgrounds() -> PackedStringArray:
-	return DirAccess.get_files_at(__get_data_path(BACKGROUND_PATH))
-
-
-static func load_background(filename: String) -> void:
+func load_background(background: String) -> void:
 	var image: Image = Image.new()
-	var path: String = __get_data_path(BACKGROUND_PATH).path_join(filename)
+	var path: String = __get_data_path(BACKGROUND_PATH).path_join(background)
 	
 	if FileAccess.file_exists(path):
-		scene["background"] = filename
+		scene["background"] = background
 		image.load(path)
 	else:
 		image = Image.create_empty(800, 600, false, Image.FORMAT_RGBF)
 		image.fill(Color.BLACK)
 		
-	background.set_image(image)
-	
+	$UI/Body/Panels/PagePanels/Page/Background.texture.set_image(image)
 
-static func next_page() -> void:
-	page_index += 1
-	if page_index == len(scene["pages"]):
+
+func next_page() -> void:
+	index += 1
+	if index == len(scene["pages"]):
 		scene["pages"].append(create_new_page())
 		page = create_new_page()
 	__sync_scene()
 
 
-static func last_page() -> void:
-	page_index -= 1
+func last_page() -> void:
+	index -= 1
 	__sync_scene()
 
 
-static func delete_page() -> void:
-	if page_index > 0:
-		scene["pages"].remove_at(page_index)
-		page_index -= 1
+func delete_page() -> void:
+	if index > 0:
+		scene["pages"].remove_at(index)
+		index -= 1
 	else:
 		scene["pages"][0] = create_new_page()
 	__sync_scene()
 
 
 func _ready() -> void:
-	open_file_dialog = $OpenFileDialog
-
-	alert = $Alert
-	
-	page_count = $UI/HeaderMargins/Header/Inputs/Page
-
-	title = $UI/HeaderMargins/Header/Inputs/TitleInput
+	dialogue_editor.connect("text_changed", __set_dialogue_text)
 	title.connect('text_submitted', __set_scene_title)
-
-	background = $UI/Body/Panels/PagePanels/Page/Background.texture
-	l_actor = $UI/Body/Panels/PagePanels/Page/Background/Actors/LActor.texture
-	r_actor = $UI/Body/Panels/PagePanels/Page/Background/Actors/RActor.texture
-	
-	dialogue = $UI/Body/Panels/PagePanels/Page/Overlay/TextMargin/DialogueBox
-	
-	dialogue_edit = $UI/Body/Panels/PagePanels/PageInputs/DialogueEditor
-	dialogue_edit.connect("text_changed", __set_dialogue_text)
-
-	background_select = $UI/HeaderMargins/Header/Inputs/MenuBar/Background
-
 	new_scene()
 
-func list_scenes() -> Array:
-	return Array(DirAccess.get_files_at(__get_data_path(SCENE_PATH))).map(func(filename: String): return filename.rstrip(".json"))
 
 func _input(event: InputEvent) -> void:
-	var ls = 'abcdefghijklmnopqrstuvwxyz'
-	for i in ls:
-		print(("hell%sjson" % i).rstrip("json"))
 	if event.is_action_pressed("Save"):
-		
+		dialogue_editor.release_focus()
 		title.release_focus()
-		dialogue_edit.release_focus()
-		
 		save_scene()
