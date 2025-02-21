@@ -7,8 +7,7 @@ extends PopupMenu
 func __index_pressed(index: int) -> void:
 	var string = get_item_text(index)
 	
-	if string == "import background" and index == 0:
-		Editor.debug("importing background")
+	if index == 0:
 		Editor.import_background()
 	else:
 		Editor.debug("loading background %s" % string)
@@ -18,7 +17,7 @@ func __index_pressed(index: int) -> void:
 func set_background_list() -> void:
 	var backgrounds = Editor.list_backgrounds()
 	clear()
-	add_item("import background")
+	add_item("import")
 	if len(backgrounds) > 0:
 		add_separator()
 		for filename in backgrounds:

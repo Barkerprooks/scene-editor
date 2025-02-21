@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=15 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
 [ext_resource type="Script" path="res://scripts/editor/menu/file.gd" id="3_j6eag"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/editor/page/buttons.gd" id="4_d0t6c"]
 [ext_resource type="Script" path="res://scripts/editor/alert.gd" id="4_pla7g"]
 [ext_resource type="Script" path="res://scripts/editor/title_input.gd" id="5_ssdpi"]
+[ext_resource type="Script" path="res://scripts/editor/menu/open_file_popup.gd" id="7_bn6pa"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
@@ -14,6 +15,7 @@
 [sub_resource type="ImageTexture" id="ImageTexture_gnf26"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_np1nb"]
+bg_color = Color(0.6, 0.6, 0.6, 0.603922)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -22,6 +24,28 @@ expand_margin_left = 10.0
 expand_margin_top = 5.0
 expand_margin_right = 10.0
 expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4t3i"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.800491, 0.800491, 0.800491, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cinuk"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.93408, 0.93408, 0.93408, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g8n16"]
 content_margin_left = 6.0
@@ -65,21 +89,21 @@ flat = true
 
 [node name="File" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
 title = "helloworld"
-item_count = 6
+item_count = 5
 item_0/text = "New"
 item_1/text = "Open"
 item_1/id = 1
 item_2/text = "Save"
 item_2/id = 2
-item_3/text = "Save As"
-item_3/id = 3
-item_4/id = 4
-item_4/separator = true
-item_5/text = "Exit"
-item_5/id = 5
+item_3/id = 4
+item_3/separator = true
+item_4/text = "Exit"
+item_4/id = 5
 script = ExtResource("3_j6eag")
 
 [node name="Actor" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
+item_count = 1
+item_0/text = "Import"
 
 [node name="Background" type="PopupMenu" parent="UI/HeaderMargins/Header/Inputs/MenuBar"]
 script = ExtResource("4_83a2c")
@@ -110,7 +134,7 @@ offset_top = -15.5
 offset_bottom = 15.5
 grow_horizontal = 0
 grow_vertical = 2
-text = "SET TITLE"
+text = "RENAME"
 flat = true
 
 [node name="Body" type="MarginContainer" parent="UI"]
@@ -218,7 +242,10 @@ dragger_visibility = 1
 [node name="DialogueEditor" type="TextEdit" parent="UI/Body/Panels/PagePanels/PageInputs"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 3.0
+size_flags_stretch_ratio = 5.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_p4t3i")
+theme_override_styles/focus = SubResource("StyleBoxFlat_cinuk")
 
 [node name="Buttons" type="VBoxContainer" parent="UI/Body/Panels/PagePanels/PageInputs"]
 layout_mode = 2
@@ -251,17 +278,24 @@ anchor_bottom = 1.0
 offset_top = -23.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.652227, 2.76752e-06, 4.33177e-07, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_g8n16")
 script = ExtResource("4_pla7g")
 
 [node name="OpenFileDialog" type="FileDialog" parent="."]
 title = "Open a File"
+initial_position = 2
+size = Vector2i(400, 600)
+force_native = true
 ok_button_text = "Open"
 file_mode = 0
 access = 2
-show_hidden_files = true
-use_native_dialog = true
 
-[node name="SaveFileDialog" type="FileDialog" parent="."]
-access = 2
-use_native_dialog = true
+[node name="LoadScene" type="PopupMenu" parent="."]
+size = Vector2i(111, 400)
+item_count = 2
+item_0/text = "Open scene"
+item_0/disabled = true
+item_1/id = 1
+item_1/separator = true
+script = ExtResource("7_bn6pa")

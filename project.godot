@@ -15,6 +15,10 @@ run/main_scene="res://scenes/editor.tscn"
 config/use_custom_user_dir=true
 config/features=PackedStringArray("4.3", "GL Compatibility")
 
+[display]
+
+window/size/resizable=false
+
 [dotnet]
 
 project/assembly_name="Scene Editor"

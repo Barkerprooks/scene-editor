@@ -18,7 +18,6 @@ static var scene: Dictionary
 
 # file system UI objects
 static var open_file_dialog: FileDialog
-static var save_file_dialog: FileDialog
 
 # scene UI objects
 static var alert: Label
@@ -53,8 +52,8 @@ static func __get_data_path(path: String) -> String:
 
 
 static func __sync_scene() -> void:
-	title.release_focus()
 	dialogue_edit.release_focus()
+	title.release_focus()
 	# syncs the scene UI with whatever is in the 'scene' dictionary
 	# check to make sure we have the correct format
 	for key in create_new_scene().keys():
@@ -80,16 +79,16 @@ static func __sync_scene() -> void:
 	
 	# load background image
 	load_background(scene["background"])
+
+
+static func __load_scene(scene_name: String) -> void:
+	var path: String = __get_data_path(SCENE_PATH).path_join(scene_name) + ".json"
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	
-	#var l_actor_image = Image.create_empty(400, 400, false, Image.FORMAT_RGBH)
-	#var r_actor_image = Image.create_empty(400, 400, false, Image.FORMAT_RGBH)
-	#
-	#l_actor.set_image(l_actor_image)
-	#r_actor.set_image(r_actor_image)
-
-
-static func __load_scene(path: String) -> void:
-	var file = FileAccess.open(path, FileAccess.READ)
+	if not file:
+		debug("file not found, talk to Parker")
+		return
+		
 	scene = JSON.parse_string(file.get_as_text())
 
 	__sync_scene()
@@ -100,6 +99,7 @@ static func __save_scene(path: String) -> void:
 	if not path.ends_with(".json"):
 		path = ".".join([path, "json"])
 
+	# sync filename and scene title
 	var filename = path.get_file().split('.')[0]
 	if filename != scene["title"]:
 		scene["title"] = filename
@@ -132,36 +132,20 @@ static func new_scene() -> void:
 	__sync_scene()
 
 
-static func open_scene() -> void:
+func open_scene() -> void:
+	$LoadScene.popup()
 	page_index = 0 # reset view to first page
-	
-	open_file_dialog.filters = ["*.json"]
-	open_file_dialog.current_dir = __get_data_path(SCENE_PATH)
-	
-	var connections = []
-	for connection in open_file_dialog.get_signal_connection_list("file_selected"):
-		connections.append(connection["callable"])
-		if connection["callable"] == __import_background:
-			open_file_dialog.disconnect("file_selected", __import_background)
-	
-	if __load_scene not in connections:
-		open_file_dialog.connect("file_selected", __load_scene)
-	
-	open_file_dialog.popup()
 
 
 static func save_scene() -> void:
+	if scene["title"] == "untitled":
+		debug("Set the scene title before you save")
+		title.grab_focus()
+		return
+	
 	var path: String = __get_data_path(SCENE_PATH)
 	var file: String = ".".join([scene["title"], "json"])
 	__save_scene(path.path_join(file))
-
-
-
-static func save_scene_as() -> void:
-	open_file_dialog.filters = ["*.json"]
-	save_file_dialog.current_dir = __get_data_path(SCENE_PATH)
-	save_file_dialog.connect("file_selected", __save_scene)
-	save_file_dialog.popup()
 
 
 static func __import_background(path: String) -> void:
@@ -237,7 +221,6 @@ static func delete_page() -> void:
 
 func _ready() -> void:
 	open_file_dialog = $OpenFileDialog
-	save_file_dialog = $SaveFileDialog
 
 	alert = $Alert
 	
@@ -259,14 +242,16 @@ func _ready() -> void:
 
 	new_scene()
 
+func list_scenes() -> Array:
+	return Array(DirAccess.get_files_at(__get_data_path(SCENE_PATH))).map(func(filename: String): return filename.rstrip(".json"))
 
 func _input(event: InputEvent) -> void:
+	var ls = 'abcdefghijklmnopqrstuvwxyz'
+	for i in ls:
+		print(("hell%sjson" % i).rstrip("json"))
 	if event.is_action_pressed("Save"):
 		
 		title.release_focus()
 		dialogue_edit.release_focus()
 		
-		if scene["title"] == "untitled":
-			save_scene_as()
-		else:
-			save_scene()
+		save_scene()
