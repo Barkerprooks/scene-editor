@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=19 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
 [ext_resource type="Script" path="res://scripts/editor/menu/actor.gd" id="3_ay77g"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/editor/page/dialogue_editor.gd" id="6_rvoxm"]
 [ext_resource type="Script" path="res://scripts/editor/menu/import/background.gd" id="7_8wxph"]
 [ext_resource type="Script" path="res://scripts/editor/menu/open_file_popup.gd" id="7_bn6pa"]
+[ext_resource type="Script" path="res://scripts/editor/menu/import/actor.gd" id="11_jaciw"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
@@ -356,12 +357,14 @@ ok_button_text = "Open"
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.png,*.jpg,*.jpeg,*.gif,*.svg")
-use_native_dialog = true
 script = ExtResource("7_8wxph")
 
 [node name="OpenScene" type="PopupMenu" parent="."]
 script = ExtResource("7_bn6pa")
 
-[node name="ImportActor" type="Panel" parent="."]
-visible = false
-layout_mode = 0
+[node name="ImportActor" type="PopupMenu" parent="."]
+script = ExtResource("11_jaciw")
+
+[node name="Title" type="Label" parent="ImportActor"]
+offset_right = 40.0
+offset_bottom = 23.0
