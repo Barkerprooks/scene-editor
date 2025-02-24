@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dwdaynrme1xnl"]
+[gd_scene load_steps=20 format=3 uid="uid://dwdaynrme1xnl"]
 
 [ext_resource type="Script" path="res://scripts/editor/editor.gd" id="1_4cqpu"]
 [ext_resource type="Script" path="res://scripts/editor/menu/actor.gd" id="3_ay77g"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/editor/alert.gd" id="4_pla7g"]
 [ext_resource type="Script" path="res://scripts/editor/menu/title_input.gd" id="5_ssdpi"]
 [ext_resource type="Script" path="res://scripts/editor/page/dialogue_editor.gd" id="6_rvoxm"]
+[ext_resource type="Script" path="res://scripts/editor/page/page_controls.gd" id="6_skghx"]
 [ext_resource type="Script" path="res://scripts/editor/menu/import/background.gd" id="7_8wxph"]
 [ext_resource type="Script" path="res://scripts/editor/menu/open_file_popup.gd" id="7_bn6pa"]
 [ext_resource type="Script" path="res://scripts/editor/menu/import/actor.gd" id="11_jaciw"]
@@ -24,10 +25,20 @@ content_margin_top = 12.0
 content_margin_right = 24.0
 content_margin_bottom = 12.0
 bg_color = Color(0.373358, 0.676408, 0.494825, 0.686275)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_blend = true
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+corner_detail = 12
+expand_margin_left = 6.0
+expand_margin_top = 6.0
+expand_margin_right = 6.0
+expand_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4t3i"]
 content_margin_left = 8.0
@@ -159,6 +170,7 @@ dragger_visibility = 2
 [node name="PageControls" type="VBoxContainer" parent="UI/Body/Panels"]
 layout_mode = 2
 size_flags_horizontal = 3
+script = ExtResource("6_skghx")
 
 [node name="HSeparator2" type="HSeparator" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
@@ -170,7 +182,7 @@ text = "ACTOR 1"
 
 [node name="LActor" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
-text = "Select actor"
+text = "< select actor >"
 flat = false
 
 [node name="LPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
@@ -188,7 +200,7 @@ text = "ACTOR 2"
 
 [node name="RActor" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
-text = "Select actor"
+text = "< select actor >"
 flat = false
 
 [node name="RPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
@@ -245,6 +257,7 @@ dragger_visibility = 2
 [node name="Effects" type="TextureRect" parent="UI/Body/Panels/PagePanels/Page/Overlay"]
 layout_mode = 2
 size_flags_vertical = 3
+size_flags_stretch_ratio = 1.5
 
 [node name="TextMargin" type="MarginContainer" parent="UI/Body/Panels/PagePanels/Page/Overlay"]
 layout_mode = 2
@@ -293,6 +306,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 5.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_p4t3i")
 theme_override_styles/focus = SubResource("StyleBoxFlat_cinuk")
 script = ExtResource("6_rvoxm")
@@ -344,7 +358,6 @@ anchor_bottom = 1.0
 offset_top = -23.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_color = Color(0.652227, 2.76752e-06, 4.33177e-07, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_g8n16")
 script = ExtResource("4_pla7g")
 
@@ -357,14 +370,55 @@ ok_button_text = "Open"
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.png,*.jpg,*.jpeg,*.gif,*.svg")
+use_native_dialog = true
 script = ExtResource("7_8wxph")
 
 [node name="OpenScene" type="PopupMenu" parent="."]
 script = ExtResource("7_bn6pa")
 
-[node name="ImportActor" type="PopupMenu" parent="."]
+[node name="ImportActor" type="Popup" parent="."]
+size = Vector2i(400, 290)
+borderless = false
 script = ExtResource("11_jaciw")
 
-[node name="Title" type="Label" parent="ImportActor"]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="VSplit" type="VBoxContainer" parent="ImportActor"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="ActorName" type="LineEdit" parent="ImportActor/VSplit"]
+layout_mode = 2
+
+[node name="Items" type="VBoxContainer" parent="ImportActor/VSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="HSplit" type="HSplitContainer" parent="ImportActor/VSplit"]
+layout_mode = 2
+theme_override_constants/separation = 12
+dragger_visibility = 1
+
+[node name="NewPoseName" type="LineEdit" parent="ImportActor/VSplit/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+placeholder_text = "Pose Name"
+flat = true
+select_all_on_focus = true
+
+[node name="NewPose" type="Button" parent="ImportActor/VSplit/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add Pose"
+flat = true
+
+[node name="Confirm" type="Button" parent="ImportActor/VSplit"]
+layout_mode = 2
+text = "Confirm"

@@ -74,7 +74,7 @@ func is_first_page() -> bool:
 	return __page == 0
 
 
-func debug(text: String) -> void:
+func alert(text: String) -> void:
 	$Alert.alert(text)
 	print(text)
 
@@ -87,7 +87,7 @@ func error(text: String) -> void:
 func __get_data_path(path: String) -> String:
 	var data_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOCUMENTS).path_join(path)
 	if not DirAccess.dir_exists_absolute(data_path):
-		debug("creating data folder %" % data_path)
+		alert("creating data folder %" % data_path)
 		DirAccess.make_dir_recursive_absolute(data_path)
 	return data_path
 
@@ -153,23 +153,23 @@ func unedited() -> bool:
 	
 
 func new_scene() -> void:
-	debug("opening a new scene")
+	alert("opening a new scene")
 	__scene = create_new_scene()
 	__page = 0
 	sync_scene()
 
 
 func open_scene() -> void:
-	debug("opening a scene")
+	alert("opening a scene")
 	$OpenScene.show_scenes()
 
 
 func save_scene() -> void:
-	debug("saving scene")
+	alert("saving scene")
 	var title: String = get_scene_title()
 	
 	if title == "untitled":
-		debug("Set the scene title before you save")
+		alert("Set the scene title before you save")
 		return
 	
 	var path: String = __get_data_path(SCENE_PATH)
@@ -186,12 +186,12 @@ func list_scenes() -> Array:
 
 
 func load_scene(title: String) -> void:
-	debug("loading scene: %s" % title)
+	alert("loading scene: %s" % title)
 	var path: String = __get_data_path(SCENE_PATH).path_join(title) + ".json"
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	
 	if not file:
-		debug("file not found, talk to Parker")
+		alert("file not found, talk to Parker")
 		return
 	
 	__scene = JSON.parse_string(file.get_as_text())
@@ -200,7 +200,7 @@ func load_scene(title: String) -> void:
 
 
 func import_background(path: String) -> void:
-	debug("importing background image: %s" % path)
+	alert("importing background image: %s" % path)
 	
 	# copy background asset into the asset folder
 	if not FileAccess.file_exists(path):
@@ -219,15 +219,29 @@ func list_backgrounds() -> Array:
 	return Array(DirAccess.get_files_at(__get_data_path(BACKGROUND_PATH)))
 
 
-func import_actor(_path: String) -> void:
-	#debug("importing a new actor: %s" % path.get_file())
-	#if not DirAccess.dir_exists_absolute(path):
-		#error("actor folder not found")
-		#return
+func list_actors() -> Array:
+	return Array(DirAccess.get_directories_at(__get_data_path(ACTOR_PATH)))
+
+
+func import_actor(path: String) -> void:
+	alert("importing a new actor: %s" % path.get_file())
+	if not DirAccess.dir_exists_absolute(path):
+		error("actor folder not found")
+		return
 
 	$ImportActor.popup()
+
+
+func copy_actor_files(actor: Dictionary) -> void:
+	var path: String = __get_data_path(ACTOR_PATH).path_join(actor["name"])
+	if not DirAccess.dir_exists_absolute(path):
+		DirAccess.make_dir_recursive_absolute(path)
 	
-	# $ImportActor.configure_actor(path)
+	var file: FileAccess = FileAccess.open(path.path_join("actor.json"), FileAccess.WRITE)
+	file.store_string(JSON.stringify(actor))
+	file.close()
+	
+	alert("saved %s" % path.path_join("actor.json"))
 
 
 func next_page() -> void:
