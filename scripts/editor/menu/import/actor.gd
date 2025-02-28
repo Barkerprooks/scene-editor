@@ -62,7 +62,8 @@ func add_options_to_menu_button(menu_button: MenuButton, files: PackedStringArra
 
 
 func copy_actor_files() -> void:
-	Editor.copy_actor_files(actor)
+	Editor.copy_actor_files(actor, title)
+	hide()
 
 
 func import_from_path(path: String) -> void:

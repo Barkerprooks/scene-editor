@@ -16,6 +16,7 @@
 [sub_resource type="ImageTexture" id="ImageTexture_8hf2w"]
 
 [sub_resource type="ImageTexture" id="ImageTexture_qylx6"]
+resource_local_to_scene = true
 
 [sub_resource type="ImageTexture" id="ImageTexture_gnf26"]
 
@@ -187,8 +188,12 @@ flat = false
 
 [node name="LPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
-text = "Select pose"
+text = "< select pose >"
 flat = false
+
+[node name="LFlipH" type="CheckButton" parent="UI/Body/Panels/PageControls"]
+layout_mode = 2
+text = "Flip Horizontal"
 
 [node name="HSeparator" type="HSeparator" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
@@ -205,8 +210,12 @@ flat = false
 
 [node name="RPose" type="MenuButton" parent="UI/Body/Panels/PageControls"]
 layout_mode = 2
-text = "Select pose"
+text = "< select pose >"
 flat = false
+
+[node name="RFlipH" type="CheckButton" parent="UI/Body/Panels/PageControls"]
+layout_mode = 2
+text = "Flip Horizontal"
 
 [node name="PagePanels" type="VSplitContainer" parent="UI/Body/Panels"]
 layout_mode = 2
@@ -237,17 +246,22 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+collapsed = true
 dragger_visibility = 2
 
 [node name="LActor" type="TextureRect" parent="UI/Body/Panels/PagePanels/Page/Background/Actors"]
 layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("ImageTexture_qylx6")
+expand_mode = 5
+stretch_mode = 6
 
 [node name="RActor" type="TextureRect" parent="UI/Body/Panels/PagePanels/Page/Background/Actors"]
 layout_mode = 2
 size_flags_horizontal = 3
 texture = SubResource("ImageTexture_gnf26")
+expand_mode = 5
+stretch_mode = 6
 
 [node name="Overlay" type="VSplitContainer" parent="UI/Body/Panels/PagePanels/Page"]
 layout_mode = 2

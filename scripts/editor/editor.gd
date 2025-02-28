@@ -6,8 +6,13 @@ const ACTOR_PATH: String = "SceneEditor/Assets/Actors"
 const SCENE_PATH: String = "SceneEditor/Scenes"
 
 
+static func create_new_actor() -> Dictionary: return {
+	"name": "", "pose": "", "flip_h": false
+}
+
+
 static func create_new_page() -> Dictionary: return { 
-	"dialogue": "", "actors": [] 
+	"dialogue": "", "actors": []
 }
 
 static func create_new_scene() -> Dictionary: return { 
@@ -223,6 +228,23 @@ func list_actors() -> Array:
 	return Array(DirAccess.get_directories_at(__get_data_path(ACTOR_PATH)))
 
 
+func load_actor_metadata(actor_name: String) -> Dictionary:
+	var file = FileAccess.open(__get_data_path(ACTOR_PATH).path_join(actor_name).path_join("actor.json"), FileAccess.READ)
+	var actor = JSON.parse_string(file.get_as_text())
+	file.close()
+	return actor
+
+
+func get_actor_poses(actor_name: String) -> Array:
+	var metadata = load_actor_metadata(actor_name)
+	return metadata["poses"].keys()
+
+
+func get_actor_pose(actor_name: String, pose: String) -> String:
+	var metadata = load_actor_metadata(actor_name)
+	return __get_data_path(ACTOR_PATH).path_join(actor_name).path_join(metadata["poses"][pose])
+
+
 func import_actor(path: String) -> void:
 	alert("importing a new actor: %s" % path.get_file())
 	if not DirAccess.dir_exists_absolute(path):
@@ -232,7 +254,7 @@ func import_actor(path: String) -> void:
 	$ImportActor.popup()
 
 
-func copy_actor_files(actor: Dictionary) -> void:
+func copy_actor_files(actor: Dictionary, import_path: String) -> void:
 	var path: String = __get_data_path(ACTOR_PATH).path_join(actor["name"])
 	if not DirAccess.dir_exists_absolute(path):
 		DirAccess.make_dir_recursive_absolute(path)
@@ -240,8 +262,21 @@ func copy_actor_files(actor: Dictionary) -> void:
 	var file: FileAccess = FileAccess.open(path.path_join("actor.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(actor))
 	file.close()
+	alert("created actor.json")
 	
-	alert("saved %s" % path.path_join("actor.json"))
+	for image in actor["poses"].values():
+		DirAccess.copy_absolute(import_path.path_join(image), path.path_join(image))
+		alert("copied %s" % image)
+
+
+func set_l_actor_pose(actor_name: String, pose: String) -> void:
+	var path = get_actor_pose(actor_name, pose)
+	$UI/Body/Panels/PagePanels/Page/Background/Actors/LActor.texture = ImageTexture.create_from_image(Image.load_from_file(path))
+
+
+func set_r_actor_pose(actor_name: String, pose: String) -> void:
+	var path = get_actor_pose(actor_name, pose)
+	$UI/Body/Panels/PagePanels/Page/Background/Actors/RActor.texture = ImageTexture.create_from_image(Image.load_from_file(path))
 
 
 func next_page() -> void:
